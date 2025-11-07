@@ -5,6 +5,11 @@ import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 import type { User as IUser } from '@/models/User';
 
+type Credentials = {
+  email: string;
+  password: string;
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -13,14 +18,14 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials) {
+      async authorize(credentials: Credentials | undefined) {
         try {
-          await dbConnect();
-          
           if (!credentials?.email || !credentials?.password) {
             throw new Error('Invalid credentials');
           }
 
+          await dbConnect();
+          
           const user = await User.findOne({ email: credentials.email }).select('+password');
           
           if (!user) {
@@ -37,7 +42,7 @@ export const authOptions: NextAuthOptions = {
             id: user._id.toString(),
             email: user.email,
             name: user.name,
-            role: user.role as 'citizen' | 'employee' | 'admin',
+            role: user.role,
             image: user.avatar?.url || null
           };
         } catch (error) {

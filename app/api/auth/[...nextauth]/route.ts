@@ -1,28 +1,15 @@
 import NextAuth from 'next-auth';
-import type { NextAuthOptions, Session } from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
+import type { Session, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '@/lib/dbConnect';
-import User from '@/models/User';
+import UserModel from '@/models/User';
 
 type Credentials = {
   email: string;
   password: string;
 };
-
-interface ExtendedToken extends JWT {
-  id: string;
-  role: 'citizen' | 'employee' | 'admin';
-}
-
-interface ExtendedSession extends Session {
-  user: {
-    id: string;
-    role: 'citizen' | 'employee' | 'admin';
-    email: string;
-    name: string;
-  };
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -32,15 +19,15 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials: Credentials | undefined) {
+      async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
             throw new Error('Invalid credentials');
           }
 
           await dbConnect();
-          
-          const user = await User.findOne({ email: credentials.email }).select('+password');
+
+          const user = await UserModel.findOne({ email: credentials.email }).select('+password');
           
           if (!user) {
             throw new Error('No user found');
@@ -58,7 +45,7 @@ export const authOptions: NextAuthOptions = {
             name: user.name,
             role: user.role,
             image: user.avatar?.url || null
-          };
+          } as User;
         } catch (error) {
           console.error('Auth error:', error);
           return null;
@@ -67,23 +54,24 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }): Promise<ExtendedToken> {
+    async jwt({ token, user }) {
       if (user) {
-        return {
-          ...token,
-          id: user.id,
-          role: user.role as 'citizen' | 'employee' | 'admin'
-        };
+        token.id = user.id;
+        token.role = user.role;
+        token.email = user.email;
+        token.name = user.name;
       }
-      return token as ExtendedToken;
+      return token;
     },
-    async session({ session, token }): Promise<ExtendedSession> {
+    async session({ session, token }): Promise<Session> {
       return {
         ...session,
         user: {
           ...session.user,
-          id: token.id as string,
-          role: token.role as 'citizen' | 'employee' | 'admin'
+          id: token.id,
+          role: token.role,
+          email: token.email,
+          name: token.name
         }
       };
     }

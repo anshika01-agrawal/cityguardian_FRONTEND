@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { ImageIcon, MapPin, AlertCircle, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import ImageUpload from "@/components/image-upload"
 
 const ISSUE_CATEGORIES = [
   { value: "air_pollution", label: "Air Quality", emoji: "💨" },
@@ -46,7 +47,11 @@ export default function IssueForm() {
     }
   })
 
-  const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [uploadedImages, setUploadedImages] = useState<{url: string, publicId: string}[]>([])
+
+  const handleImagesChange = (images: {url: string, publicId: string}[]) => {
+    setUploadedImages(images)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,7 +76,7 @@ export default function IssueForm() {
         },
         body: JSON.stringify({
           ...formData,
-          images: uploadedImages.map(url => ({ url, publicId: '' }))
+          images: uploadedImages
         }),
       })
 
@@ -240,11 +245,12 @@ export default function IssueForm() {
         {/* Image Upload */}
         <div>
           <label className="block text-sm font-semibold text-foreground mb-3">Photos (Optional)</label>
-          <div className="border-2 border-dashed border-accent/30 rounded-lg p-8 text-center hover:border-accent/60 transition-colors cursor-pointer">
-            <ImageIcon className="w-8 h-8 text-accent/50 mx-auto mb-2" />
-            <p className="text-foreground/70">Click or drag to upload photos</p>
-            <p className="text-sm text-foreground/50 mt-1">Max 5 photos, 10MB each</p>
-          </div>
+          <ImageUpload 
+            onImagesChange={handleImagesChange}
+            maxImages={5}
+            maxSizePerImage={10}
+            disabled={isSubmitting}
+          />
         </div>
 
         {/* Submit */}

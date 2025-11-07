@@ -6,7 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "test-db": "npx tsx scripts/complete-setup-test.ts",
+    "health-check": "curl http://localhost:3000/api/health"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -63,6 +65,7 @@
     "react": "19.2.0",
     "react-day-picker": "9.8.0",
     "react-dom": "19.2.0",
+    "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.60.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.4",

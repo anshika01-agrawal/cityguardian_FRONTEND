@@ -3,8 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import { NextAuthOptions } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
-import { Session } from 'next-auth';
+import { User as AuthUser } from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,7 +13,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<AuthUser | null> {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid credentials');
         }
@@ -33,12 +32,12 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid password');
         }
 
-        // Return user object that matches the User interface
         return {
           id: user._id.toString(),
           email: user.email,
           name: user.name,
           role: user.role,
+          image: null
         };
       }
     })
@@ -46,14 +45,13 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Type assertion to match our User interface
         token.id = user.id;
-        token.role = (user as any).role;
+        token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
-      if (token) {
+    async session({ session, token }) {
+      if (session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
       }
@@ -66,7 +64,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET || 'your-secret-key'
+  secret: process.env.NEXTAUTH_SECRET
 };
 
 const handler = NextAuth(authOptions);

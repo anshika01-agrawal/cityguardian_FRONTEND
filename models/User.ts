@@ -1,5 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
+
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  mobile: string;
+  role: 'citizen' | 'employee' | 'admin';
+  avatar?: {
+    url: string;
+    publicId: string;
+  };
+  complaints: mongoose.Types.ObjectId[];
+  createdAt: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
 
 const userSchema = new mongoose.Schema({
   name: {

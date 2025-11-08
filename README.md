@@ -38,11 +38,19 @@ A gaming-themed environmental monitoring platform with Matrix/Cyberpunk aestheti
 
 ## 🔧 Hardware Models
 
+> **📸 How to add images**: 
+> 1. **Direct Paste**: Copy your image and paste it directly in the placeholder areas below
+> 2. **Base64 Embed**: Convert your image to base64 and paste in the `src="data:image/jpeg;base64,YOUR_BASE64_HERE"`
+> 3. **GitHub Drag-Drop**: In GitHub editor, simply drag and drop your images in the marked areas
+
 ### Environmental Monitoring Device
 
 Our custom-built IoT sensor array designed for real-time environmental data collection:
 
-![Hardware Model - Environmental Sensor Array](/hardware-model-main.jpg)
+<!-- Paste your hardware image here directly -->
+<img src="data:image/jpeg;base64," alt="Hardware Model - Environmental Sensor Array" width="600" height="400" />
+
+<!-- Alternative: You can also paste the image directly here using GitHub's drag-and-drop feature -->
 
 #### Components
 - **Microcontroller**: Arduino-based processing unit
@@ -78,7 +86,10 @@ Our custom-built IoT sensor array designed for real-time environmental data coll
 
 A smaller, portable version for personal environmental monitoring:
 
-![Hardware Model - Compact Unit](/hardware-model-compact.jpg)
+<!-- Paste your compact hardware image here directly -->
+<img src="data:image/jpeg;base64," alt="Hardware Model - Compact Unit" width="500" height="350" />
+
+<!-- Alternative: You can drag and drop the image here directly -->
 
 #### Features
 - **Portable Design**: Lightweight and battery-powered
@@ -90,13 +101,41 @@ A smaller, portable version for personal environmental monitoring:
 
 Central hub for multiple sensor coordination:
 
-![Hardware Model - Gateway Hub](/hardware-model-gateway.jpg)
+<!-- Paste your gateway hardware image here directly -->
+<img src="data:image/jpeg;base64," alt="Hardware Model - Gateway Hub" width="500" height="350" />
+
+<!-- Alternative: You can drag and drop the image here directly -->
 
 #### Capabilities
 - **Multi-Sensor Management**: Coordinate up to 50 devices
 - **Data Aggregation**: Central processing and analytics
 - **Edge Computing**: Local AI processing capabilities
 - **Redundant Connectivity**: Multiple communication protocols
+
+---
+
+### 📸 Image Integration Guide
+
+#### Method 1: Direct GitHub Paste (Recommended)
+1. Open this README file on GitHub
+2. Click "Edit" button
+3. Copy your image (Ctrl+C)
+4. Paste directly where you see the placeholder comments
+5. GitHub will automatically upload and embed the image
+
+#### Method 2: Base64 Embedding
+```bash
+# Convert image to base64 (Linux/Mac)
+base64 -i your-image.jpg
+
+# Then replace the empty base64 string in the HTML img tags above
+```
+
+#### Method 3: Upload to Issues/PR (Quick)
+1. Create a new issue or comment
+2. Drag and drop your image
+3. Copy the generated markdown link
+4. Paste in README
 
 ## 🚀 Quick Start
 
